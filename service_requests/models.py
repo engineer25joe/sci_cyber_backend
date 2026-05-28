@@ -50,3 +50,25 @@ class ServiceRequest(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.service.title}"
+
+class RequestMessage(models.Model):
+
+    request = models.ForeignKey(
+        ServiceRequest,
+        on_delete=models.CASCADE,
+        related_name="messages"
+    )
+
+    sender = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+
+    message = models.TextField()
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return f"{self.sender.username}"

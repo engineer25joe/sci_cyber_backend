@@ -1,17 +1,28 @@
 from rest_framework import serializers
 from .models import ServiceRequest
+from services.models import Service
+
+
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = "__all__"
 
 
 class ServiceRequestSerializer(serializers.ModelSerializer):
+    service = ServiceSerializer(read_only=True)
+
     class Meta:
         model = ServiceRequest
-        fields = "__all__"
-        read_only_fields = ["user"]
-
-    def create(self, validated_data):
-        request = self.context.get("request")
-
-        if request and request.user.is_authenticated:
-            validated_data["user"] = request.user
-
-        return ServiceRequest.objects.create(**validated_data)
+        fields = [
+            "id",
+            "service",
+            "description",
+            "status",
+            "price_charged",
+            "is_paid",
+            "created_at",
+            "updated_at",
+            "estimated_completion_time",
+            "ai_used",
+        ]
